@@ -23,6 +23,8 @@ import {
   NSpace,
   NInputGroup,
   NInputNumber,
+  NIcon,
+  NPopover
 } from 'naive-ui';
 import Provider from './components/Provider.vue';
 import router from './router';
@@ -52,7 +54,9 @@ const naiveUI = create({
     NImage,
     NSpace,
     NInputGroup,
-    NInputNumber
+    NInputNumber,
+    NIcon,
+    NPopover
   ],
 });
 

@@ -1,28 +1,77 @@
 <template>
-  <n-space class="search-bar" justify="space-between" :wrap="false"> 
-<n-auto-complete
-    v-model:value="query"
-    :options="options"
-    placeholder="Search"
-    :on-select="(value) => onSelect(value)"
-  ></n-auto-complete>
-  <n-button @click="advancedSearch = !advancedSearch">Advanced Search</n-button>
+  <n-space class="search-bar" justify="space-between" :wrap="false">
+    <n-auto-complete
+      v-model:value="query"
+      :options="options"
+      placeholder="Search"
+      :on-select="(value) => onSelect(value)"
+    ></n-auto-complete>
+    <n-button
+      @click="
+        $router.push({ path: '/', query: { q: query } });
+        search(query);
+      "
+    >
+      <template #icon>
+        <n-icon>
+          <Search />
+        </n-icon>
+      </template>
+    </n-button>
+    <n-button v-if="query" @click="clearSearch()">
+      <template #icon>
+        <n-icon>
+          <Close />
+        </n-icon>
+      </template>
+    </n-button>
+    <n-button @click="advancedSearch = !advancedSearch"
+      >Advanced Search</n-button
+    >
   </n-space>
-  <div v-if="advancedSearch"> 
-  <n-divider></n-divider>
-  <n-space :wrap="false">
-    <n-h6>Select year range: </n-h6>
-    <n-input-number v-model:value="minYear" :validator="x => x > 0 && x < 2022" placeholder="1969" :show-button="false"></n-input-number>  
-    <n-input-number v-model:value="maxYear" :validator="x => x > 0 && x < 2022" placeholder="1992" :show-button="false"></n-input-number>  
-    <n-h6 v-if="minYear && maxYear && minYear > maxYear" style="color: #d03050">The first year must be smaller than the last!</n-h6>
-    <n-button @click="filterByYears(minYear, maxYear)" :disabled="!(minYear && maxYear && minYear <= maxYear && minYear > 0 && maxYear > 0 && minYear < 2022 && maxYear < 2022)">Filter</n-button>
-  </n-space>
+  <div v-if="advancedSearch">
+    <n-divider></n-divider>
+    <n-space :wrap="false">
+      <n-h6>Select year range: </n-h6>
+      <n-input-number
+        v-model:value="minYear"
+        :validator="(x) => x > 0 && x < 2022"
+        placeholder="1969"
+        :show-button="false"
+      ></n-input-number>
+      <n-input-number
+        v-model:value="maxYear"
+        :validator="(x) => x > 0 && x < 2022"
+        placeholder="1992"
+        :show-button="false"
+      ></n-input-number>
+      <n-button
+        @click="filterByYears(minYear, maxYear)"
+        :disabled="
+          !(
+            minYear &&
+            maxYear &&
+            minYear <= maxYear &&
+            minYear > 0 &&
+            maxYear > 0 &&
+            minYear < 2022 &&
+            maxYear < 2022
+          )
+        "
+        >Filter</n-button
+      >
+      <n-h6
+        v-if="minYear && maxYear && minYear > maxYear"
+        style="color: #d03050"
+        >The first year must be smaller than the last!</n-h6
+      >
+    </n-space>
   </div>
   <n-divider></n-divider>
   <n-grid
     x-gap="16"
     y-gap="16"
-    cols="1 s:2 m:3 l:4 xl:5 2xl:7"
+    cols="2 s:3 m:4 l:5 xl:6 2xl:7"
     responsive="screen"
   >
     <n-gi v-for="album in albums" :key="album.id">
@@ -42,6 +91,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { Search, Close } from '@vicons/ionicons5';
 import axios from 'axios';
 
 interface Album {
@@ -98,23 +148,63 @@ export default defineComponent({
       if (selected) this.$router.push('/' + selected.id);
     },
     filterByYears(min: number, max: number) {
-      let filteredAlbums = []
-      for(let i in this.originalAlbums) {
-        if(this.originalAlbums[i].year >= min && this.originalAlbums[i].year <= max) {
-          filteredAlbums.push(this.originalAlbums[i])
+      let filteredAlbums = [];
+      for (let i in this.originalAlbums) {
+        if (
+          this.originalAlbums[i].year >= min &&
+          this.originalAlbums[i].year <= max
+        ) {
+          filteredAlbums.push(this.originalAlbums[i]);
         }
       }
-      this.albums = filteredAlbums
-  }
+      this.albums = filteredAlbums;
+    },
+    search(query?: string) {
+      if (!query) {
+        if (this.$route.query.q) {
+          query = this.$route.query.q.toString();
+        } else {
+          this.clearSearch()
+          return;
+        }
+      }
+      let filteredAlbums = [];
+      for (let i in this.originalAlbums) {
+        if (
+          this.originalAlbums[i].title
+            .toLowerCase()
+            .includes(query.trim().toLowerCase()) ||
+          this.originalAlbums[i].artist
+            .toLowerCase()
+            .includes(query.trim().toLowerCase())
+        ) {
+          filteredAlbums.push(this.originalAlbums[i]);
+        }
+      }
+      this.albums = filteredAlbums;
+    },
+    clearSearch() {
+      this.$router.push('/');
+      this.query = '';
+      this.albums = this.originalAlbums;
+    },
   },
   async mounted() {
     try {
       this.originalAlbums = await this.getAlbums();
-      this.albums = this.originalAlbums
+      this.albums = this.originalAlbums;
     } catch (error) {
       console.error(error);
       return;
     }
+    if (this.$route.query.q) {
+      this.query = this.$route.query.q.toString();
+      this.search();
+    }
+  },
+  components: {
+    Search,
+    Close,
   },
 });
 </script>

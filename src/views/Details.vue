@@ -4,7 +4,16 @@
       <n-h1>
         {{ album.title }}
       </n-h1>
-      <n-h3>{{ album.artist }}</n-h3>
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-h3
+            class="artist-name"
+            @click="$router.push({ path: '/', query: { q: album.artist } })"
+            >{{ album.artist }}</n-h3
+          >
+        </template>
+        <span>Click to show songs by artist</span>
+      </n-popover>
       <n-text>{{ album.summary }}</n-text>
     </div>
     <n-image :src="album.cover"></n-image>
@@ -50,5 +59,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .details {
   max-width: 750px;
+}
+
+.artist-name {
+  cursor: pointer;
+  width: fit-content;
 }
 </style>
