@@ -18,6 +18,11 @@ import {
   NGridItem,
   NCard,
   NAutoComplete,
+  NDivider,
+  NImage,
+  NSpace,
+  NInputGroup,
+  NInputNumber,
 } from 'naive-ui';
 import Provider from './components/Provider.vue';
 import router from './router';
@@ -43,6 +48,11 @@ const naiveUI = create({
     NGridItem,
     NCard,
     NAutoComplete,
+    NDivider,
+    NImage,
+    NSpace,
+    NInputGroup,
+    NInputNumber
   ],
 });
 
