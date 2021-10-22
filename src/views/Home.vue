@@ -1,11 +1,6 @@
 <template>
   <n-space class="search-bar" justify="space-between" :wrap="false">
-    <n-auto-complete
-      v-model:value="query"
-      :options="options"
-      placeholder="Search"
-      :on-select="(value) => onSelect(value)"
-    ></n-auto-complete>
+    <n-auto-complete v-model:value="query" :options="options" placeholder="Search" :on-select="(value) => onSelect(value)"></n-auto-complete>
     <n-button
       @click="
         $router.push({ path: '/', query: { q: query } });
@@ -25,61 +20,31 @@
         </n-icon>
       </template>
     </n-button>
-    <n-button @click="advancedSearch = !advancedSearch"
-      >Advanced Search</n-button
-    >
+    <n-button @click="advancedSearch = !advancedSearch">Advanced Search</n-button>
   </n-space>
   <div v-if="advancedSearch">
     <n-divider></n-divider>
     <n-space :wrap="false">
       <n-h6>Select year range: </n-h6>
-      <n-input-number
-        v-model:value="minYear"
-        :validator="(x) => x > 0 && x < 2022"
-        placeholder="1969"
-        :show-button="false"
-      ></n-input-number>
-      <n-input-number
-        v-model:value="maxYear"
-        :validator="(x) => x > 0 && x < 2022"
-        placeholder="1992"
-        :show-button="false"
-      ></n-input-number>
-      <n-button
-        @click="filterByYears(minYear, maxYear)"
-        :disabled="
-          !(
-            minYear &&
-            maxYear &&
-            minYear <= maxYear &&
-            minYear > 0 &&
-            maxYear > 0 &&
-            minYear < 2022 &&
-            maxYear < 2022
-          )
-        "
-        >Filter</n-button
-      >
-      <n-h6
-        v-if="minYear && maxYear && minYear > maxYear"
-        style="color: #d03050"
-        >The first year must be smaller than the last!</n-h6
-      >
+      <n-input-number v-model:value="minYear" :validator="(x) => x > 0 && x < 2022" placeholder="1969" :show-button="false"></n-input-number>
+      <n-input-number v-model:value="maxYear" :validator="(x) => x > 0 && x < 2022" placeholder="1992" :show-button="false"></n-input-number>
+      <n-popover trigger="hover">
+        <template #trigger>
+          <n-button
+            @click="filterByYears(minYear, maxYear)"
+            :disabled="!(minYear && maxYear && minYear <= maxYear && minYear > 0 && maxYear > 0 && minYear < 2022 && maxYear < 2022)"
+            >Filter</n-button
+          >
+        </template>
+        <span>Click to search artist</span>
+      </n-popover>
+      <n-h6 v-if="minYear && maxYear && minYear > maxYear" style="color: #d03050">The first year must be smaller than the last!</n-h6>
     </n-space>
   </div>
   <n-divider></n-divider>
-  <n-grid
-    x-gap="16"
-    y-gap="16"
-    cols="2 s:3 m:4 l:5 xl:6 2xl:7"
-    responsive="screen"
-  >
+  <n-grid x-gap="16" y-gap="16" cols="2 s:3 m:4 l:5 xl:6 2xl:7" responsive="screen">
     <n-gi v-for="album in albums" :key="album.id">
-      <n-card
-        :title="album.title"
-        @click="$router.push(`/${album.id}`)"
-        :hoverable="true"
-      >
+      <n-card :title="album.title" @click="$router.push(`/${album.id}`)" :hoverable="true">
         <template #cover>
           <img :src="album.cover" />
         </template>
@@ -128,10 +93,7 @@ export default defineComponent({
         let cleanAlbumTitle = this.albums[i].title.toLowerCase();
         let cleanQuery = this.query.toLowerCase().trim();
         let cleanArtist = this.albums[i].artist.toLowerCase();
-        if (
-          cleanAlbumTitle.includes(cleanQuery) ||
-          cleanArtist.includes(cleanQuery)
-        ) {
+        if (cleanAlbumTitle.includes(cleanQuery) || cleanArtist.includes(cleanQuery)) {
           titleArray.push(this.albums[i].title);
         }
       }
@@ -150,10 +112,7 @@ export default defineComponent({
     filterByYears(min: number, max: number) {
       let filteredAlbums = [];
       for (let i in this.originalAlbums) {
-        if (
-          this.originalAlbums[i].year >= min &&
-          this.originalAlbums[i].year <= max
-        ) {
+        if (this.originalAlbums[i].year >= min && this.originalAlbums[i].year <= max) {
           filteredAlbums.push(this.originalAlbums[i]);
         }
       }
@@ -164,19 +123,15 @@ export default defineComponent({
         if (this.$route.query.q) {
           query = this.$route.query.q.toString();
         } else {
-          this.clearSearch()
+          this.clearSearch();
           return;
         }
       }
       let filteredAlbums = [];
       for (let i in this.originalAlbums) {
         if (
-          this.originalAlbums[i].title
-            .toLowerCase()
-            .includes(query.trim().toLowerCase()) ||
-          this.originalAlbums[i].artist
-            .toLowerCase()
-            .includes(query.trim().toLowerCase())
+          this.originalAlbums[i].title.toLowerCase().includes(query.trim().toLowerCase()) ||
+          this.originalAlbums[i].artist.toLowerCase().includes(query.trim().toLowerCase())
         ) {
           filteredAlbums.push(this.originalAlbums[i]);
         }

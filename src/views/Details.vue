@@ -4,16 +4,16 @@
       <n-h1>
         {{ album.title }}
       </n-h1>
-      <n-popover trigger="hover">
-        <template #trigger>
-          <n-h3
-            class="artist-name"
-            @click="$router.push({ path: '/', query: { q: album.artist } })"
-            >{{ album.artist }}</n-h3
-          >
-        </template>
-        <span>Click to show songs by artist</span>
-      </n-popover>
+      <n-divider></n-divider>
+      <n-space>
+        <n-popover trigger="hover">
+          <template #trigger>
+            <n-h2 class="artist-name" @click="$router.push({ path: '/', query: { q: album.artist } })">{{ album.artist }}</n-h2>
+          </template>
+          <span>Click to search artist</span>
+        </n-popover>
+        <n-h2> - {{ album.year }}</n-h2>
+      </n-space>
       <n-text>{{ album.summary }}</n-text>
     </div>
     <n-image :src="album.cover"></n-image>
@@ -44,9 +44,7 @@ export default defineComponent({
   },
   async mounted() {
     try {
-      const res = await axios.get(
-        'http://localhost:5000/albums/' + this.$route.params.id
-      );
+      const res = await axios.get('http://localhost:5000/albums/' + this.$route.params.id);
       console.log(res);
       this.album = res.data[0];
     } catch (error) {
@@ -64,5 +62,9 @@ export default defineComponent({
 .artist-name {
   cursor: pointer;
   width: fit-content;
+}
+
+.n-image {
+  border-radius: 3px;
 }
 </style>
