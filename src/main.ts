@@ -25,6 +25,9 @@ import {
   NInputNumber,
   NIcon,
   NPopover,
+  NInput,
+  NText,
+  NSwitch
 } from 'naive-ui';
 import Provider from './components/Provider.vue';
 import router from './router';
@@ -57,6 +60,9 @@ const naiveUI = create({
     NInputNumber,
     NIcon,
     NPopover,
+    NInput,
+    NText,
+    NSwitch
   ],
 });
 

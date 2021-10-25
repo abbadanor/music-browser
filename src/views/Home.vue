@@ -52,11 +52,18 @@
       </n-card>
     </n-gi>
   </n-grid>
+  <n-button @click="$router.push('/post')" class="add-button" color="#C3073F" size="large" circle>
+          <template #icon>
+            <n-icon color="#fff">
+              <add/>
+            </n-icon>
+          </template>
+        </n-button>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { Search, Close } from '@vicons/ionicons5';
+import { Search, Close, Add } from '@vicons/ionicons5';
 import axios from 'axios';
 
 interface Album {
@@ -160,6 +167,7 @@ export default defineComponent({
   components: {
     Search,
     Close,
+    Add
   },
 });
 </script>
@@ -172,5 +180,12 @@ export default defineComponent({
 
 .search-bar > :first-child {
   width: 100%;
+}
+
+.add-button {
+  position: fixed;
+  bottom: 90px;
+  right: 30px;
+  z-index: 10;
 }
 </style>

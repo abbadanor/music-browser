@@ -1,13 +1,15 @@
 <template>
   <n-config-provider :theme="this.$store.state.darkTheme ? darkTheme : ''" :themeOverrides="themeOverrides">
-    <App />
+    <n-notification-provider>
+      <App />
+    </n-notification-provider>
     <n-global-style></n-global-style>
   </n-config-provider>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { NConfigProvider, NGlobalStyle, darkTheme } from 'naive-ui';
+import { NConfigProvider, NGlobalStyle, NNotificationProvider, darkTheme } from 'naive-ui';
 import App from '../App.vue';
 
 export default defineComponent({
@@ -16,6 +18,7 @@ export default defineComponent({
     App,
     NConfigProvider,
     NGlobalStyle,
+    NNotificationProvider
   },
 
   setup() {
